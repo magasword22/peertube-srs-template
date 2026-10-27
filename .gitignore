@@ -1,0 +1,11 @@
+# Secrets
+.env
+
+# Volumes runtime (données applicatives)
+docker-volume/data/
+docker-volume/db/
+docker-volume/redis/
+
+# Divers
+*.log
+.DS_Store

@@ -1,0 +1,45 @@
+services:
+
+  peertube:
+    image: chocobozzz/peertube:production
+    env_file:
+      - .env
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./docker-volume/data:/data
+    depends_on:
+      - postgres
+      - redis
+    restart: "always"
+    deploy:
+      resources:
+        limits:
+          cpus: '8.0'
+
+  srs:
+    build: ./docker-volume/srs
+    image: srs-custom:latest
+    restart: "always"
+    ports:
+      - "1935:1935"       # Ingestion RTMP
+      - "1985:1985"       # API / Signalisation WebRTC
+      - "8000:8000/udp"   # Flux média WebRTC temps réel
+    volumes:
+      - ./docker-volume/srs/srs.conf:/usr/local/srs/conf/docker.conf:ro
+    depends_on:
+      - peertube
+
+  postgres:
+    image: postgres:17-alpine
+    env_file:
+      - .env
+    volumes:
+      - ./docker-volume/db:/var/lib/postgresql/data
+    restart: "always"
+
+  redis:
+    image: redis:8-alpine
+    volumes:
+      - ./docker-volume/redis:/data
+    restart: "always"
