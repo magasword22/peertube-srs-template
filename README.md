@@ -105,8 +105,13 @@ out_ack_size 2500000;
 
 ```nginx
 vprofile  baseline;      # supprime le décodage lourd CABAC et les images B
-vpreset   ultrafast;     # préréglage ultra-rapide
-vparams { tune zerolatency; }
+vpreset   medium;         # préréglage équilibré (qualité/CPU)
+vparams {
+        tune        zerolatency;
+        g           30;           # GOP aligné sur 30 fps
+        keyint_min  30;
+        sc_threshold 0;           # pas de scène-cut
+    }
 vwidth   0;              # pas de redimensionnement logiciel
 vheight  0;
 ```
